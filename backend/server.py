@@ -238,24 +238,43 @@ def action(request:Request,body:dict):
                 cachekey=(account['id'],hashlib.sha256(json.dumps(settings,sort_keys=True).encode()).hexdigest())
                 tools=tool_cache.setdefault(cachekey,Tools(settings))
                 leads_info=[{'name':l['name'],'area':l.get('area'),'address':l.get('address'),'phone':l.get('phone'),'website':l.get('website'),'rating':l.get('rating'),'status':l.get('websiteStatus'),'facts':l.get('facts',[])} for l in c.get('leads',[]) if not l.get('rejected')]
+                current_count=len(leads_info)
+                current_names=[l['name'] for l in leads_info]
+                current_target=c.get('target', 3)
                 
                 parse_prompt=(
-                    "You are the Client Hunter AI assistant. Analyze the user's latest message in this ongoing conversation.\n"
-                    f"Context: Category: {c.get('category')}, Location: {c.get('location')}\n"
-                    f"Leads found: {json.dumps(leads_info)}\n"
-                    f"Recent conversation: {json.dumps(c.get('messages',[])[-4:])}\n"
-                    f"User latest message: {reply}\n\n"
-                    "Determine:\n"
-                    "1. If the user explicitly asks to find MORE/NEW business leads (e.g. 'find 2 more', 'find another shop', 'search plumbers'): set type='more_leads', additionalTarget: number (default 1), message: string.\n"
-                    "2. If the user asks a question about a business, location, years in business, owner, products, or says 'search on google' / 'find it': set type='search_qa', searchQuery: string (targeted search query for Google/DDG).\n"
-                    "3. Otherwise (general question, chat, or answering from existing known details or inspecting attached image): set type='chat_qa', answer: string (clear markdown answer).\n"
-                    "Return JSON: {type: 'more_leads' | 'search_qa' | 'chat_qa', additionalTarget?: number, searchQuery?: string, answer?: string, message?: string}"
+                    "You are the Client Hunter AI assistant. Analyze the user's latest message in this ongoing campaign.\n"
+                    f"Campaign Context:\n"
+                    f"- Category: {c.get('category')}, Location: {c.get('location')}\n"
+                    f"- Requested Target: {current_target} leads\n"
+                    f"- Currently Qualified Leads Saved: {current_count} (Names: {current_names})\n"
+                    f"- Recent conversation messages: {json.dumps(c.get('messages',[])[-6:])}\n"
+                    f"- User latest message: \"{reply}\"\n\n"
+                    "Classify the user intent into ONE of these types:\n"
+                    "1. 'more_leads':\n"
+                    "   Use this if the user wants to find leads, find more/remaining leads, reach a target count, complains that fewer leads were found than requested, points out missing leads, specifies or narrows down a neighborhood/locality, or tells the agent to proceed/start/resume searching (e.g. 'check for mount road and thousand light areas', 'find 2 leads from this area', 'find other two', 'i need 3 leads', 'why didn't you start searching', 'okay do that').\n"
+                    "   Extract:\n"
+                    "   - desiredTotalTarget: integer or null (if user explicitly specifies an absolute total number of leads desired overall, e.g. 'i need 3 leads' -> 3, 'requested total count to be 3' -> 3).\n"
+                    "   - additionalTarget: integer or null (if user asks for N additional leads, e.g. 'find 2 more' -> 2, 'find another' -> 1).\n"
+                    "   - newLocality: string or null (if user specifies, refines, or narrows the neighborhood or area, e.g. 'mount road and thousand light' -> 'Mount Road, Thousand Lights', 'T. Nagar' -> 'T. Nagar').\n"
+                    "   - message: string (a reassuring confirmation acknowledging the actual current count, the requested locality, and what will be searched).\n\n"
+                    "2. 'search_qa':\n"
+                    "   Use this if the user asks a specific question about an existing business, owner, phone number, address, or asks to search google for information.\n"
+                    "   - searchQuery: string\n\n"
+                    "3. 'chat_qa':\n"
+                    "   Use this ONLY for purely general conversational chat or questions not related to starting/resuming lead search or finding businesses.\n"
+                    "   - answer: string\n\n"
+                    "Return JSON: {type: 'more_leads' | 'search_qa' | 'chat_qa', desiredTotalTarget?: number, additionalTarget?: number, newLocality?: string, searchQuery?: string, answer?: string, message?: string}"
                 )
                 parsed=tools.gemini(parse_prompt, image_data=image, image_mime=image_type)
                 if isinstance(parsed,list) and parsed: parsed=parsed[0]
                 elif not isinstance(parsed,dict): parsed={}
                 
                 req_type=parsed.get('type','chat_qa')
+                research_intent=bool(re.search(r'\b(find|search|more|remaining|start|do that|go ahead|leads?|shops?|stores?|retailers?|why didn\'t you|only \d|need \d)\b', reply, re.IGNORECASE))
+                if req_type=='chat_qa' and research_intent and current_count < current_target:
+                    req_type='more_leads'
+                
                 if req_type=='search_qa':
                     lead_name=c['leads'][0]['name'] if c.get('leads') else ''
                     sq=parsed.get('searchQuery') or f"{lead_name} {c.get('location','')} {reply}"
@@ -277,11 +296,42 @@ def action(request:Request,body:dict):
                     c['messages'].append({'role':'assistant','content':str(ans_text or 'I checked online records for you.')})
                     event(c,'Assistant','Answered your question.','success')
                 elif req_type=='more_leads':
-                    add_t=parsed.get('additionalTarget') or 1
-                    msg=parsed.get('message') or f"Searching for additional {c.get('category','business')} in {c.get('location','')}..."
+                    new_loc=parsed.get('newLocality')
+                    if new_loc and str(new_loc).strip() and str(new_loc).lower() not in ('null','none'):
+                        loc_clean=str(new_loc).strip()
+                        city=c.get('criteria',{}).get('city') or 'Chennai'
+                        c.setdefault('criteria',{})
+                        c['criteria']['locality']=loc_clean
+                        c['criteria']['locationTerms']=[t.strip() for t in re.split(r'[,/]|(?:\band\b)', loc_clean) if t.strip()]+([city] if city else [])
+                        c['location']=f"{loc_clean}, {city}".strip(', ')
+                    desired_total=parsed.get('desiredTotalTarget')
+                    add_t=parsed.get('additionalTarget')
+                    if isinstance(desired_total, (int, float)) and desired_total > 0:
+                        new_target = int(desired_total)
+                    elif isinstance(add_t, (int, float)) and add_t > 0:
+                        new_target = current_count + int(add_t)
+                    else:
+                        new_target = max(current_target, current_count + 1)
+                    
+                    if new_target <= current_count:
+                        new_target = current_count + 1
+                    
+                    new_target = max(1, min(30, new_target))
+                    needed = new_target - current_count
+                    loc_name=c.get('criteria',{}).get('locality') or c.get('location','')
+                    msg=parsed.get('message') or f"Currently have {current_count} qualified lead(s). Searching for {needed} more {c.get('category','business')} in {loc_name} to reach your target of {new_target}..."
                     c['messages'].append({'role':'assistant','content':msg})
-                    c.update(target=min(30,c.get('target',1)+add_t),status='running' if c.get('plan') else 'planning',phase='research',stalledTurns=0)
-                    event(c,'Supervisor','Continuing research for additional leads...')
+                    c.update(
+                        target=new_target,
+                        status='running' if c.get('plan') else 'planning',
+                        phase='research',
+                        stalledTurns=0,
+                        steps=0,
+                        searches=min(c.get('searches', 0), 10),
+                        error='',
+                        question=''
+                    )
+                    event(c,'Supervisor',f'Continuing research: searching for {needed} more lead(s) in {loc_name} to reach target of {new_target}...','info')
                 else:
                     ans=parsed.get('answer') or parsed.get('reply')
                     if not ans:
