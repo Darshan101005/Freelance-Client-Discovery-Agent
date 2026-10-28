@@ -1,38 +1,38 @@
-# 🎯 ClientHunter — Autonomous Freelance Client Discovery Agent
+# ClientHunter — Autonomous Freelance Client Discovery Agent
 
 An intelligent, multi-agent lead generation and research engine designed for freelance web developers, designers, and digital agencies. **ClientHunter** autonomously identifies local businesses that lack an online presence or need a modern website redesign, verifies public evidence across the web, extracts operational hours and contact channels, and drafts personalized outreach emails.
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-- **🎯 Precise Local Business Discovery**  
-  Search for specific business categories across any locality and city (e.g., *"Find 5 cafés in Porur, Chennai that need a website"*).
+- **Precise Local Business Discovery**  
+  Search for specific business categories across any locality and city (for example, *"Find 5 cafés in Porur, Chennai that need a website"*).
 
-- **🛡️ Evidence-Grounded Qualification**  
-  Every lead is verified using deterministic rules rather than model hallucinations. The engine matches local identity, cross-checks Google Maps, scans directories, and confirms whether an official dedicated website exists.
+- **Evidence-Grounded Qualification**  
+  Every lead is verified using deterministic rules rather than model assumptions. The engine matches local identity, cross-checks Google Maps, scans directories, and confirms whether an official dedicated website exists.
 
-- **🕒 7-Day Shop Timings & Business Hours**  
+- **7-Day Shop Timings & Business Hours**  
   Extracts and displays complete weekly operating schedules (Monday through Sunday) with clear daily status and live "Today" badges.
 
-- **🌐 Free WHOIS Domain Intelligence & Live Screenshots**  
+- **Free WHOIS Domain Intelligence & Live Screenshots**  
   For businesses with existing websites, ClientHunter displays domain age, ICANN registrar, registration dates, expiration timelines, and live website preview snapshots.
 
-- **📱 Verified Contact & Social Channels**  
+- **Verified Contact & Social Channels**  
   Automatically collects and formats verified phone numbers (+91 normalization), official addresses, WhatsApp chat links, Instagram profiles, and Facebook business pages.
 
-- **✉️ Automated Outreach Email Generation**  
+- **Automated Outreach Email Generation**  
   Generates personalized, non-generic cold outreach email drafts tailored to each specific business's situation and observed opportunities.
 
-- **📊 One-Click Excel Export**  
+- **One-Click Excel Export**  
   Export all qualified leads, verification statuses, evidence URLs, and drafted emails into a clean, formatted spreadsheet (`.xlsx`).
 
-- **⚡ ChatGPT-Style Interactive Workspace**  
+- **Interactive Chat Workspace**  
   Modern, responsive interface featuring live AI connection status, quick prompt copy & retry controls, paperclip attachments, and confirmation safeguards.
 
 ---
 
-## 🏗️ Architecture & Workflow
+## Architecture & Workflow
 
 ClientHunter uses **LangGraph** to coordinate specialized agents with a durable SQLite checkpoint engine:
 
@@ -65,7 +65,7 @@ ClientHunter uses **LangGraph** to coordinate specialized agents with a durable 
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **Python 3.11+**
@@ -124,7 +124,7 @@ npm run dev:local
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── app/                      # Next.js / React application frontend
@@ -145,7 +145,7 @@ npm run dev:local
 
 ---
 
-## 🔒 Security & Privacy
+## Security & Privacy
 
 - **Encrypted Credentials**: API keys are encrypted at rest using local Fernet keys and never leaked to frontend bundles.
 - **Local Isolation**: All chat history, checkpoints, and qualified leads remain stored locally in your SQLite database.
@@ -153,6 +153,6 @@ npm run dev:local
 
 ---
 
-## 📄 License
+## License
 
 This project is open-source and available under the [MIT License](LICENSE).
