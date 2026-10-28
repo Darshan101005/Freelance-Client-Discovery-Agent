@@ -1,0 +1,776 @@
+[
+  {
+    "name": "normalizes +91 phone and keeps sourced Google rating",
+    "accepted": true,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "cannot call a known website absent",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps",
+        "website": "https://example-paints.test/"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "one search cannot prove a no-site finding",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact"
+    ]
+  },
+  {
+    "name": "wrong city cannot qualify",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints paint shop Porur Austin USA",
+        "address": "Porur, Austin, USA",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "wrong neighbourhood cannot qualify",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints paint shop Anna Nagar Chennai",
+        "address": "Anna Nagar, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "unresolved possible website rejected",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "https://example-paints.test/",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop",
+      "websiteRelationship": "unresolved"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "category must have a source quote",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "invented category claim"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "existing-website mode cannot accept absence",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "outdated",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "existing website with inspected improvement signal",
+    "accepted": true,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "outdated",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "page",
+        "url": "https://example-paints.test/",
+        "title": "Example Paints",
+        "text": "Example Paints. 22 Arcot Road, Porur, Chennai. Call 6369222709",
+        "status": 200,
+        "audit": {
+          "Mobile viewport": "Not detected"
+        },
+        "issues": [
+          "No mobile viewport declaration was found on the inspected page."
+        ]
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "same business name in USA does not link to Chennai",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "outdated",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "page",
+        "url": "https://example-paints.test/",
+        "title": "Example Paints",
+        "text": "Example Paints in Austin, Texas, USA. Call 5125550101",
+        "status": 200,
+        "audit": {
+          "Mobile viewport": "Not detected"
+        },
+        "issues": [
+          "No mobile viewport declaration was found on the inspected page."
+        ]
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "blocked page is not an inspected redesign lead",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "outdated",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "page",
+        "url": "https://example-paints.test/",
+        "title": "Example Paints",
+        "text": "Forbidden",
+        "status": 403,
+        "audit": {
+          "Mobile viewport": "Not detected"
+        },
+        "issues": [
+          "No mobile viewport declaration was found on the inspected page."
+        ]
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "no improvement signals means no redesign lead",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "outdated",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "page",
+        "url": "https://example-paints.test/",
+        "title": "Example Paints",
+        "text": "Example Paints. 22 Arcot Road, Porur, Chennai. Call 6369222709",
+        "status": 200,
+        "audit": {
+          "Mobile viewport": "Not detected"
+        },
+        "issues": []
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "possible official site cannot be omitted by the model",
+    "accepted": false,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "search",
+        "url": "https://example-paints.test/",
+        "title": "Example Paints - Official site",
+        "text": "Example Paints products and contact"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "similar brand word does not attach another business",
+    "accepted": true,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps"
+      },
+      {
+        "kind": "search",
+        "url": "https://www.zomato.com/chennai/example-point",
+        "title": "Example Point",
+        "text": "Example Point restaurant in Porur Chennai. Phone +91 9999999999"
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  },
+  {
+    "name": "unrelated social footer is not a business profile",
+    "accepted": true,
+    "c": {
+      "id": "test",
+      "criteria": {
+        "websiteMode": "missing",
+        "city": "Chennai",
+        "locality": "Porur",
+        "countryCode": "in",
+        "category": "paint shops",
+        "locationTerms": [
+          "Porur",
+          "Chennai"
+        ]
+      },
+      "category": "paint shops",
+      "location": "Porur, Chennai",
+      "leads": []
+    },
+    "p": {
+      "name": "Example Paints",
+      "address": "22 Arcot Road, Porur, Chennai",
+      "phone": "6369222709",
+      "email": "invented@example.test",
+      "website": "",
+      "categoryMatch": true,
+      "categoryQuote": "paint shop"
+    },
+    "docs": [
+      {
+        "kind": "place",
+        "url": "https://www.google.com/maps?cid=123",
+        "title": "Example Paints",
+        "text": "Example Paints \u00b7 paint shop \u00b7 22 Arcot Road, Porur, Chennai \u00b7 +91 63692 22709",
+        "address": "22 Arcot Road, Porur, Chennai",
+        "phone": "+91 63692 22709",
+        "rating": 4.4,
+        "reviewCount": 23,
+        "provider": "Google Maps",
+        "links": [
+          {
+            "url": "https://www.instagram.com/directorybrand",
+            "text": "Follow us"
+          }
+        ]
+      }
+    ],
+    "queries": [
+      "Example Paints Porur Chennai official website contact",
+      "Example Paints Porur Chennai business website address phone"
+    ]
+  }
+]
