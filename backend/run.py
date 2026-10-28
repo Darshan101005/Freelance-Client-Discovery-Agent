@@ -18,4 +18,4 @@ if __name__ == '__main__':
     if not os.getenv('SERPER_API_KEY') and os.isatty(0):
         os.environ['SERPER_API_KEY'] = getpass.getpass('Serper API key (optional fallback; hidden): ').strip()
     print('Client Hunter backend: http://127.0.0.1:8000 — sign up locally, then configure your connections in Settings.')
-    uvicorn.run('backend.server:app', host='127.0.0.1', port=8000)
+    uvicorn.run('backend.server:app', host='127.0.0.1', port=8000, reload=True)

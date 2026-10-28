@@ -7,7 +7,6 @@ def now(): return datetime.now(timezone.utc).isoformat()
 def norm(v): return re.sub('[^a-z0-9]','',str(v or '').lower())
 def name_matches(name,text):
     key=norm(name);return len(key)>=3 and key in norm(text)
-def geography(cr,text): return bool(cr.get('locationTerms')) and all(norm(t) in norm(text) for t in cr['locationTerms'])
 def phone_key(value,country='in'):
     d=re.sub(r'\D','',str(value or ''))
     if country=='in':
@@ -20,22 +19,40 @@ def same_site(a,b): return bool(a and b) and (urlparse(a).hostname or '').remove
 def listing(url):
     p=urlparse(url);h=(p.hostname or '').lower().removeprefix('www.')
     if not h: return True
-    domains=('justdial.com','indiamart.com','instagram.com','facebook.com','linkedin.com','youtube.com','zomato.com','swiggy.com','magicpin.in','sulekha.com','yelp.com','dnb.com','infobel.in','infobel.com','tradeindia.com','zaubacorp.com','yellowpages.in','yellowpages.com','bizdunia.com','asklaila.com','indiabizlist.com','bharatibiz.com','cylex-india.com','finndit.com','quikr.com','olx.in','indiatrade.com','zoominfo.com','owler.com','crunchbase.com','kompass.com','bloomberg.com','wikipedia.org','twitter.com','x.com','threads.net','pinterest.com','tripadvisor.com','google.com','google.co.in','locanto.net','exportersindia.com','topranker4u.com','dialme24.com','vyaparapp.in','indiacatalog.com','citylocalpro.com','jdmagicbox.com','mapsofindia.com','indiacom.com')
+    if any(k in h for k in ('yellowpages','directory','goldenchennai','indiabiz','citysearch','webindia123','chennaionline','localbusiness','lbb.in','mouthshut','nearbuy','whatshot','cityshor','tofler','zaubacorp','cleartax','instafinancials','kompass','tradeindia','indiatrade')):
+        return True
+    domains=('justdial.com','indiamart.com','instagram.com','facebook.com','linkedin.com','youtube.com','zomato.com','swiggy.com','magicpin.in','sulekha.com','yelp.com','dnb.com','infobel.in','infobel.com','tradeindia.com','zaubacorp.com','yellowpages.in','yellowpages.com','bizdunia.com','asklaila.com','indiabizlist.com','bharatibiz.com','cylex-india.com','finndit.com','quikr.com','olx.in','indiatrade.com','zoominfo.com','owler.com','crunchbase.com','kompass.com','bloomberg.com','wikipedia.org','twitter.com','x.com','threads.net','pinterest.com','tripadvisor.com','tripadvisor.in','google.com','google.co.in','locanto.net','exportersindia.com','topranker4u.com','dialme24.com','vyaparapp.in','indiacatalog.com','citylocalpro.com','jdmagicbox.com','mapsofindia.com','indiacom.com','lbb.in','nearbuy.com','mouthshut.com')
     if any(h==d or h.endswith('.'+d) for d in domains): return True
-    if any(k in p.path.lower() for k in ('/business-directory/','/company-profile','/profile/','/listing/','/dealer/','/store-locator/','/locator/','/store/','/company/','/b2b/','/catalog/')): return True
+    if any(k in p.path.lower() for k in ('/business-directory/','/company-profile','/profile/','/listing/','/dealer/','/store-locator/','/locator/','/store/','/company/','/b2b/','/catalog/','/info/')): return True
     return bool(re.search(r'google\.[a-z.]+$',h) and re.match(r'/(maps|search)',p.path)) or bool(re.search('dealer|store-locator|storelocator|/locator/',p.path,re.I))
 def requested_mode(prompt,fallback='missing'):
     if re.search(r'(no|without|doesn.?t have|don.?t have|do not have|not have|lack\w*)\s+(an?\s+)?(official\s+)?web\s?sites?|websites?\s+(not found|missing)',prompt,re.I): return 'missing'
     if re.search(r'outdated|not modern|old website|poor website|redesign|already (have|has).*website|existing website',prompt,re.I): return 'outdated'
     return fallback
 
-def geography(cr,text):
-    t_norm=norm(text)
+def geography(cr, text):
+    t_norm = norm(text)
     if not t_norm: return False
-    terms=cr.get('locationTerms',[])
-    if terms and any(norm(t) in t_norm for t in terms): return True
-    loc=norm(cr.get('locality','')); city=norm(cr.get('city',''))
-    return bool((loc and loc in t_norm) or (city and city in t_norm))
+    loc = cr.get('locality', '').strip()
+    city = norm(cr.get('city', ''))
+    if loc:
+        raw_parts = re.split(r'[,/&]|(?:\band\b)', loc, flags=re.I)
+        terms = [norm(p) for p in raw_parts if len(norm(p)) >= 3]
+        expanded_terms = list(terms)
+        for term in terms:
+            if 'mountroad' in term:
+                expanded_terms.extend(['annasalai', 'spencerplaza', 'triplicane', 'royapettah'])
+            if 'annasalai' in term:
+                expanded_terms.extend(['mountroad', 'spencerplaza'])
+            if 'thousandlight' in term:
+                expanded_terms.extend(['thousandlight', 'gopalapuram', 'greamsroad'])
+        if any(term in t_norm for term in expanded_terms):
+            return True
+        return False
+    if city and city in t_norm:
+        return True
+    terms = cr.get('locationTerms', [])
+    return any(norm(t) in t_norm for t in terms) if terms else True
 
 def source_docs(c):
     docs=[]
@@ -61,8 +78,25 @@ def qualify(c,p,docs,queries):
     if not address and cr.get('location'): address=cr['location']
 
     cat_words=[w for w in re.split(r'\s+',cr.get('category','').lower()) if len(w)>=3]
-    cat_match=p.get('categoryMatch') is True or any(w in name.lower() for w in cat_words) or any(any(w in d.get('title','').lower() or w in d.get('text','').lower() for w in cat_words) for d in identity)
+    expanded_cat=list(cat_words)
+    cat_lower=cr.get('category','').lower()
+    if any(k in cat_lower for k in ('shoe','footwear','boot','sandal')):
+        expanded_cat.extend(['shoe','shoes','footwear','boots','sandals','chappal','chappals','slippers','leather','sneakers'])
+    elif any(k in cat_lower for k in ('plumb','pipe')):
+        expanded_cat.extend(['plumber','plumbing','pipe','sanitary','leak','drainage'])
+    elif any(k in cat_lower for k in ('gym','fitness','workout')):
+        expanded_cat.extend(['gym','fitness','workout','crossfit','trainer'])
+    elif any(k in cat_lower for k in ('bake','cake','pastry')):
+        expanded_cat.extend(['bakery','cake','cakes','pastry','pastries','bread'])
+    elif any(k in cat_lower for k in ('cloth','tailor','boutique','apparel','textile')):
+        expanded_cat.extend(['clothes','clothing','apparel','textile','tailor','boutique','fashion','garment','garments','menswear','womenswear'])
+    cat_match=p.get('categoryMatch') is True or any(w in name.lower() for w in expanded_cat) or any(any(w in d.get('title','').lower() or w in d.get('text','').lower() for w in expanded_cat) for d in identity)
     if not cat_match and cat_words: return None,'The business category is not supported by the sources.'
+
+    if cr.get('locality'):
+        full_loc_text = f"{address} {p.get('address','')} {' '.join(d.get('title','')+' '+d.get('text','') for d in identity)}"
+        if not geography(cr, full_loc_text):
+            return None, f"Store is not located in the requested area ({cr.get('locality')})."
 
     country=cr.get('countryCode','in')
     numbers=list(dict.fromkeys(n for d in identity for n in [phone_key(d.get('phone'),country)]+phones(d.get('text',''),country) if n))
@@ -70,9 +104,12 @@ def qualify(c,p,docs,queries):
     number=phone_key(anchor.get('phone'),country) or (wanted if wanted in numbers else numbers[0] if numbers else '')
 
     pages=[d for d in docs if d['kind']=='page' and d.get('status')==200 and not listing(d['url'])]
-    site_candidate = anchor.get('website') or p.get('website') or ''
+    site_candidate = anchor.get('website') or ''
+    if not site_candidate and p.get('website') and p.get('websiteRelationship') != 'unrelated':
+        site_candidate = p.get('website')
     if listing(site_candidate): site_candidate = ''
-    website = site_candidate or (pages[0]['url'] if pages else '')
+    matched_page = next((d['url'] for d in pages if name_matches(name, urlparse(d['url']).hostname or '') and not listing(d['url'])), '')
+    website = site_candidate or matched_page
     if listing(website): website = ''
 
     if cr.get('websiteMode')=='missing':
