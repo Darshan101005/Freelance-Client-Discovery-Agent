@@ -1,0 +1,5 @@
+import {owner} from '@/lib/client-hunter/store';
+import {readSettings,writeSettings} from '@/lib/client-hunter/settings';
+import {configuration,keyContext} from '@/lib/client-hunter/providers';
+export async function GET(r:Request){try{const s=await readSettings(owner(r));return Response.json(keyContext.run(s,()=>({...configuration(),sender:s.sender||'',customGemini:!!s.GEMINI_API_KEY,customSerper:!!s.SERPER_API_KEY})));}catch(e){return Response.json({error:(e as Error).message},{status:500});}}
+export async function POST(r:Request){try{const origin=r.headers.get('origin');if(origin&&new URL(origin).host!==new URL(r.url).host)return Response.json({error:'Invalid origin.'},{status:403});const b:any=await r.json(),s=await readSettings(owner(r));for(const [input,key]of [['gemini','GEMINI_API_KEY'],['serper','SERPER_API_KEY']]){if(typeof b[input]==='string'&&b[input].trim())s[key]=b[input].trim().slice(0,250);if(b['clear'+input])delete s[key];}if(typeof b.sender==='string')s.sender=b.sender.slice(0,200);await writeSettings(owner(r),s);return Response.json({saved:true});}catch(e){return Response.json({error:(e as Error).message},{status:500});}}
